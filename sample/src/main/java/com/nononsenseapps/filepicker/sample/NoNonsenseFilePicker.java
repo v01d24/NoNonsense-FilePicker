@@ -6,12 +6,10 @@
 
 package com.nononsenseapps.filepicker.sample;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -176,7 +174,6 @@ public class NoNonsenseFilePicker extends Activity {
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Always check the resultCode!

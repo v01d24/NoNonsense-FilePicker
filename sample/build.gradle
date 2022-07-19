@@ -13,13 +13,12 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdk 14
+        minSdk 21
         targetSdk 28
         versionCode gitCommitCount
         versionName gitTag
 
         vectorDrawables.useSupportLibrary true
-        multiDexEnabled true
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }

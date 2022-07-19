@@ -13,11 +13,10 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdk 9
+        minSdk 21
         targetSdk 28
         versionCode gitCommitCount
         versionName gitTag
-        vectorDrawables.useSupportLibrary true
     }
 
     buildTypes {
