@@ -3,10 +3,10 @@ package com.nononsenseapps.filepicker.sample;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
-import androidx.test.InstrumentationRegistry;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
 import com.nononsenseapps.filepicker.AbstractFilePickerActivity;
