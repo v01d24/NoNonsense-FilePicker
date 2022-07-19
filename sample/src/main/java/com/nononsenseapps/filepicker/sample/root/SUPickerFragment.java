@@ -65,7 +65,7 @@ public class SUPickerFragment extends FilePickerFragment {
             Log.d("libsuperuser: ", "suVersion:"+suVersion+" suVersionInternal:"+suVersionInternal);
         } else {
             // Notify that no root access available
-            SUErrorFragment.showDialog(getFragmentManager());
+            SUErrorFragment.showDialog(getParentFragmentManager());
         }
     }
 }
