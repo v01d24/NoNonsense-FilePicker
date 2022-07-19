@@ -4,15 +4,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 28
+    compileSdk 28
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 28
+        minSdk 14
+        targetSdk 28
         versionCode gitCommitCount
         versionName gitTag
 
@@ -22,14 +24,14 @@ android {
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
-    flavorDimensions "sdk"
+    flavorDimensions.add("sdk")
     productFlavors {
         sample {
             dimension "sdk"
         }
         uitests {
             dimension "sdk"
-            minSdkVersion 18
+            minSdk 18
         }
     }
 
@@ -40,7 +42,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         abortOnError false
     }
 
@@ -48,8 +50,8 @@ android {
         exclude 'META-INF/*'
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding true
     }
 }
 

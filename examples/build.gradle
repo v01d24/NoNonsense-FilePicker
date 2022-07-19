@@ -1,13 +1,15 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    compileSdkVersion 28
+    compileSdk 28
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.nononsenseapps.filepicker.examples"
-        minSdkVersion 15
-        targetSdkVersion 28
+        minSdk 15
+        targetSdk 28
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary true
@@ -20,7 +22,7 @@ android {
         }
     }
 
-    lintOptions {
+    lint {
         abortOnError false
     }
 }
