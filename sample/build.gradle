@@ -74,7 +74,7 @@ dependencies {
     implementation 'commons-net:commons-net:3.8.0'
 
     // Root example
-    implementation 'eu.chainfire:libsuperuser:1.1.0.202004101746'
+    implementation 'com.github.topjohnwu.libsu:core:5.0.2'
 
     // Fast scroll example
     implementation 'com.simplecityapps:recyclerview-fastscroll:2.0.1'

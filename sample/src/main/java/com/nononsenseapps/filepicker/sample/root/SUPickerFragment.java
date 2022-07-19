@@ -1,14 +1,12 @@
 package com.nononsenseapps.filepicker.sample.root;
 
 import androidx.annotation.NonNull;
-import android.util.Log;
 
 import com.nononsenseapps.filepicker.FilePickerFragment;
+import com.topjohnwu.superuser.Shell;
 
 import java.io.File;
 import java.util.List;
-
-import eu.chainfire.libsuperuser.Shell;
 
 /**
  * An example picker which calls out to LibSU to get Root-permissions to view otherwise hidden files.
@@ -35,8 +33,9 @@ public class SUPickerFragment extends FilePickerFragment {
 
     private boolean haveReadPermission(@NonNull File file) {
         List<String> result =
-                Shell.SH.run("test -r " + file.getAbsolutePath() + " && echo \"rootsuccess\"");
-        return result != null && !result.isEmpty() && "rootsuccess".equals(result.get(0));
+                Shell.cmd("test -r " + file.getAbsolutePath() + " && echo \"rootsuccess\"")
+                        .exec().getOut();
+        return !result.isEmpty() && "rootsuccess".equals(result.get(0));
     }
 
     private boolean needSUPermission(@NonNull File path) {
@@ -44,13 +43,13 @@ public class SUPickerFragment extends FilePickerFragment {
     }
 
     private boolean isSUAvailable() {
-        return Shell.SU.available();
+        return Shell.isAppGrantedRoot() == Boolean.TRUE;
     }
 
     private boolean hasSUPermission() {
         if (isSUAvailable()) {
-            List<String> result = Shell.SU.run("ls -l /");
-            if (result != null && !result.isEmpty()) {
+            List<String> result = Shell.cmd("ls -l /").exec().getOut();
+            if (!result.isEmpty()) {
                 return true;
             }
         }
@@ -58,12 +57,7 @@ public class SUPickerFragment extends FilePickerFragment {
     }
 
     private void handleSUPermission() {
-        if (isSUAvailable()) {
-            // request
-            String suVersion = Shell.SU.version(false);
-            String suVersionInternal = Shell.SU.version(true);
-            Log.d("libsuperuser: ", "suVersion:"+suVersion+" suVersionInternal:"+suVersionInternal);
-        } else {
+        if (!isSUAvailable()) {
             // Notify that no root access available
             SUErrorFragment.showDialog(getParentFragmentManager());
         }
