@@ -21,7 +21,7 @@ android {
         vectorDrawables.useSupportLibrary true
         multiDexEnabled true
 
-        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     flavorDimensions.add("sdk")
@@ -58,6 +58,9 @@ android {
 dependencies {
     implementation project(':library')
 
+    // AndroidX
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+
     // Image loading sample
     implementation 'com.github.bumptech.glide:glide:3.6.1'
 
@@ -74,9 +77,10 @@ dependencies {
     implementation 'com.dropbox.core:dropbox-core-sdk:3.0.5'
 
     // UI Tests
+    implementation 'junit:junit:4.12'
     androidTestImplementation 'junit:junit:4.12'
-    uitestsImplementation 'com.android.support.test.espresso:espresso-contrib:2.2.2'
-    uitestsImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
-    uitestsImplementation 'com.android.support.test:runner:0.5'
-    uitestsImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    uitestsImplementation 'androidx.test.espresso:espresso-contrib:3.1.0'
+    uitestsImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    uitestsImplementation 'androidx.test.ext:junit:1.1.1'
+    uitestsImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
