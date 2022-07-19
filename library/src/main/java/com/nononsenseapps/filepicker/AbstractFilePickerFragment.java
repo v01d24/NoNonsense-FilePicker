@@ -375,7 +375,7 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             mListener = (OnFilePickedListener) context;
@@ -393,21 +393,21 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     }
 
     /**
-     * Called when the fragment's activity has been created and this
-     * fragment's view hierarchy instantiated.  It can be used to do final
-     * initialization once these pieces are in place, such as retrieving
-     * views or restoring state.  It is also useful for fragments that use
-     * {@link #setRetainInstance(boolean)} to retain their instance,
-     * as this callback tells the fragment when it is fully associated with
-     * the new activity instance.  This is called after {@link #onCreateView}
-     * and before {@link #onViewStateRestored(Bundle)}.
+     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     * has returned, but before any saved state has been restored in to the view.
+     * This gives subclasses a chance to initialize themselves once
+     * they know their view hierarchy has been completely created.  The fragment's
+     * view hierarchy is not however attached to its parent at this point.
      *
-     * @param savedInstanceState If the fragment is being re-created from
-     *                           a previous saved state, this is the state.
+     * @param view               The View returned by
+     *                           {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
      */
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view,
+                              @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         // Only if we have no state
         if (mCurrentPath == null) {
             if (savedInstanceState != null) {
@@ -473,7 +473,7 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.picker_actions, menu);
 
         MenuItem item = menu.findItem(R.id.nnf_action_createdir);
@@ -524,7 +524,7 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
         if (hasPermission(nextPath)) {
             mCurrentPath = nextPath;
             isLoading = true;
-            getLoaderManager()
+            LoaderManager.getInstance(this)
                     .restartLoader(0, null, AbstractFilePickerFragment.this);
         } else {
             handlePermission(nextPath);
@@ -585,7 +585,7 @@ public abstract class AbstractFilePickerFragment<T> extends Fragment
             mCurrentDirView.setText(getFullPath(mCurrentPath));
         }
         // Stop loading now to avoid a refresh clearing the user's selections
-        getLoaderManager().destroyLoader( 0 );
+        LoaderManager.getInstance(this).destroyLoader( 0 );
     }
 
     /**

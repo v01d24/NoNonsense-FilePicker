@@ -6,8 +6,6 @@
 
 package com.nononsenseapps.filepicker;
 
-
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -31,11 +29,6 @@ public abstract class NewItemFragment extends DialogFragment {
 
     public void setListener(@Nullable final OnNewFolderListener listener) {
         this.listener = listener;
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
     }
 
     @NonNull
