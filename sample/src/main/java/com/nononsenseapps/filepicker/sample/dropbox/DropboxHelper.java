@@ -22,7 +22,7 @@ import com.dropbox.core.v2.DbxClientV2;
  * Create an app and generate a key for it here:
  * https://www.dropbox.com/developers
  */
-class DropboxHelper {
+public class DropboxHelper {
     private static final String APP_KEY = "replace_me_with_your_own_app_key";
     private static final String PREF_DROPBOX_TOKEN = "dropboxtoken";
     private static final String CLIENT_IDENTIFIER = "no-nonsense-file-picker";

@@ -358,14 +358,14 @@ public class FtpPickerFragment extends AbstractFilePickerFragment<FtpFile> {
     }
 
     @Override
-    public void onLoadFinished(Loader<SortedList<FtpFile>> loader, SortedList<FtpFile> data) {
+    public void onLoadFinished(@NonNull Loader<SortedList<FtpFile>> loader, SortedList<FtpFile> data) {
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         super.onLoadFinished(loader, data);
     }
 
     @Override
-    public void onLoaderReset(Loader<SortedList<FtpFile>> loader) {
+    public void onLoaderReset(@NonNull Loader<SortedList<FtpFile>> loader) {
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         super.onLoaderReset(loader);

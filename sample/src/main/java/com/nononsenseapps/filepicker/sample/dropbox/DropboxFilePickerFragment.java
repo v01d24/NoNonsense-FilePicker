@@ -78,7 +78,7 @@ public class DropboxFilePickerFragment extends AbstractFilePickerFragment<Metada
      * Once loading has finished, show the list and hide the progress bar.
      */
     @Override
-    public void onLoadFinished(Loader<SortedList<Metadata>> loader, SortedList<Metadata> data) {
+    public void onLoadFinished(@NonNull Loader<SortedList<Metadata>> loader, SortedList<Metadata> data) {
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         super.onLoadFinished(loader, data);
@@ -88,7 +88,7 @@ public class DropboxFilePickerFragment extends AbstractFilePickerFragment<Metada
      * Once loading has finished, show the list and hide the progress bar.
      */
     @Override
-    public void onLoaderReset(Loader<SortedList<Metadata>> loader) {
+    public void onLoaderReset(@NonNull Loader<SortedList<Metadata>> loader) {
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
         super.onLoaderReset(loader);
