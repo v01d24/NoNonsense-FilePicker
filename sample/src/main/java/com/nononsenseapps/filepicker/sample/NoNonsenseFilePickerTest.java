@@ -10,7 +10,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission;
 import androidx.core.content.ContextCompat;
 
 import java.io.File;
@@ -22,7 +23,6 @@ import static org.junit.Assert.assertTrue;
 
 
 public class NoNonsenseFilePickerTest extends NoNonsenseFilePicker {
-    private static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 0;
 
     @Override
     protected void onResume() {
@@ -75,24 +75,18 @@ public class NoNonsenseFilePickerTest extends NoNonsenseFilePicker {
 
     protected void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                    PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        // If arrays are empty, then process was cancelled
-        if (permissions.length > 0) {
-            if (PackageManager.PERMISSION_GRANTED == grantResults[0]) {
-                try {
-                    createTestData();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    try {
+                        createTestData();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
-        }
-    }
+            });
 }

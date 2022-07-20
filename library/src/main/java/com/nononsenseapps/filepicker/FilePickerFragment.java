@@ -10,6 +10,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.FileObserver;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.RequestPermission;
 import androidx.annotation.NonNull;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.core.content.ContextCompat;
@@ -27,7 +29,6 @@ import java.io.File;
  */
 public class FilePickerFragment extends AbstractFilePickerFragment<File> {
 
-    protected static final int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     protected boolean showHiddenItems = false;
     private File mRequestedPath = null;
 
@@ -75,44 +76,29 @@ public class FilePickerFragment extends AbstractFilePickerFragment<File> {
 //        }
 
         mRequestedPath = path;
-        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 
     /**
-     * This the method that gets notified when permission is granted/denied. By default,
+     * This is the object that will be launched when permission is granted/denied. By default,
      * a granted request will result in a refresh of the list.
-     *
-     * @param requestCode  the code you requested
-     * @param permissions  array of permissions you requested. empty if process was cancelled.
-     * @param grantResults results for requests. empty if process was cancelled.
      */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        // If arrays are empty, then process was cancelled
-        if (permissions.length == 0) {
-            // Treat this as a cancel press
-            if (mListener != null) {
-                mListener.onCancelled();
-            }
-        } else { // if (requestCode == PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-            if (PackageManager.PERMISSION_GRANTED == grantResults[0]) {
-                // Do refresh
-                if (mRequestedPath != null) {
-                    refresh(mRequestedPath);
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    // Do refresh
+                    if (mRequestedPath != null) {
+                        refresh(mRequestedPath);
+                    }
+                } else {
+                    Toast.makeText(getContext(), R.string.nnf_permission_external_write_denied,
+                            Toast.LENGTH_SHORT).show();
+                    // Treat this as a cancel press
+                    if (mListener != null) {
+                        mListener.onCancelled();
+                    }
                 }
-            } else {
-                Toast.makeText(getContext(), R.string.nnf_permission_external_write_denied,
-                        Toast.LENGTH_SHORT).show();
-                // Treat this as a cancel press
-                if (mListener != null) {
-                    mListener.onCancelled();
-                }
-            }
-        }
-    }
+            });
 
     /**
      * Return true if the path is a directory and not a file.

@@ -8,6 +8,10 @@ package com.nononsenseapps.filepicker.sample;
 
 import android.app.Activity;
 import android.content.Intent;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,15 +37,16 @@ import com.nononsenseapps.filepicker.sample.root.SUPickerActivity2;
 import java.util.List;
 
 
-public class NoNonsenseFilePicker extends Activity {
+public class NoNonsenseFilePicker extends AppCompatActivity {
 
     // How to handle multiple return data
     public static boolean useClipData = true;
 
-    static final int CODE_SD = 0;
-    static final int CODE_DB = 1;
-    static final int CODE_FTP = 2;
     ActivityNoNonsenseFilePickerBinding binding;
+    private final ActivityResultLauncher<Intent> codeDbOrFtpLauncher =
+            registerForActivityResult(new StartActivityForResult(), this::codeDbOrFtpResult);
+    private final ActivityResultLauncher<Intent> codeSdLauncher =
+            registerForActivityResult(new StartActivityForResult(), this::codeSdResult);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +58,9 @@ public class NoNonsenseFilePicker extends Activity {
                     @Override
                     public void onClick(final View v) {
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_SD, FilePickerActivity2.class);
+                            startActivity(codeSdLauncher, FilePickerActivity2.class);
                         } else {
-                            startActivity(CODE_SD, FilePickerActivity.class);
+                            startActivity(codeSdLauncher, FilePickerActivity.class);
                         }
                     }
                 });
@@ -65,9 +70,9 @@ public class NoNonsenseFilePicker extends Activity {
                     @Override
                     public void onClick(final View v) {
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_SD, MultimediaPickerActivity2.class);
+                            startActivity(codeSdLauncher, MultimediaPickerActivity2.class);
                         } else {
-                            startActivity(CODE_SD, MultimediaPickerActivity.class);
+                            startActivity(codeSdLauncher, MultimediaPickerActivity.class);
                         }
                     }
                 });
@@ -77,9 +82,9 @@ public class NoNonsenseFilePicker extends Activity {
                     @Override
                     public void onClick(final View v) {
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_FTP, FtpPickerActivity2.class);
+                            startActivity(codeDbOrFtpLauncher, FtpPickerActivity2.class);
                         } else {
-                            startActivity(CODE_FTP, FtpPickerActivity.class);
+                            startActivity(codeDbOrFtpLauncher, FtpPickerActivity.class);
                         }
                     }
                 });
@@ -89,9 +94,9 @@ public class NoNonsenseFilePicker extends Activity {
                     @Override
                     public void onClick(final View v) {
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_DB, DropboxFilePickerActivity2.class);
+                            startActivity(codeDbOrFtpLauncher, DropboxFilePickerActivity2.class);
                         } else {
-                            startActivity(CODE_DB, DropboxFilePickerActivity.class);
+                            startActivity(codeDbOrFtpLauncher, DropboxFilePickerActivity.class);
                         }
                     }
                 });
@@ -101,9 +106,9 @@ public class NoNonsenseFilePicker extends Activity {
                     @Override
                     public void onClick(View v) {
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_SD, SUPickerActivity.class);
+                            startActivity(codeSdLauncher, SUPickerActivity.class);
                         } else {
-                            startActivity(CODE_SD, SUPickerActivity2.class);
+                            startActivity(codeSdLauncher, SUPickerActivity2.class);
                         }
                     }
                 });
@@ -113,15 +118,15 @@ public class NoNonsenseFilePicker extends Activity {
                     @Override
                     public void onClick(View v) {
                         if (binding.checkLightTheme.isChecked()) {
-                            startActivity(CODE_SD, FastScrollerFilePickerActivity.class);
+                            startActivity(codeSdLauncher, FastScrollerFilePickerActivity.class);
                         } else {
-                            startActivity(CODE_SD, FastScrollerFilePickerActivity2.class);
+                            startActivity(codeSdLauncher, FastScrollerFilePickerActivity2.class);
                         }
                     }
                 });
     }
 
-    protected void startActivity(final int code, final Class<?> klass) {
+    protected void startActivity(final ActivityResultLauncher<Intent> launcher, final Class<?> klass) {
         final Intent i = new Intent(this, klass);
 
         i.setAction(Intent.ACTION_GET_CONTENT);
@@ -154,7 +159,7 @@ public class NoNonsenseFilePicker extends Activity {
         // This line is solely so that test classes can override intents given through UI
         i.putExtras(getIntent());
 
-        startActivityForResult(i, code);
+        launcher.launch(i);
     }
 
     @Override
@@ -174,24 +179,35 @@ public class NoNonsenseFilePicker extends Activity {
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Always check the resultCode!
-        // Checking for the requestCodes is a bit redundant but good style
-        if (resultCode == Activity.RESULT_OK &&
-                (CODE_SD == requestCode || CODE_DB == requestCode || CODE_FTP == requestCode)) {
+    private void codeDbOrFtpResult(final ActivityResult result) {
+        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
             // Use the provided utility method to parse the result
-            List<Uri> files = Utils.getSelectedFilesFromResult(data);
+            final List<Uri> files = Utils.getSelectedFilesFromResult(result.getData());
 
             // Do something with your list of files here
-            StringBuilder sb = new StringBuilder();
-            for (Uri uri : files) {
+            final StringBuilder sb = new StringBuilder();
+            for (final Uri uri : files) {
                 if (sb.length() > 0) {
                     sb.append("\n");
                 }
-                sb.append(CODE_SD == requestCode ?
-                        Utils.getFileForUri(uri).toString() :
-                        uri.toString());
+                sb.append(uri.toString());
+            }
+            binding.text.setText(sb.toString());
+        }
+    }
+
+    private void codeSdResult(final ActivityResult result) {
+        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+            // Use the provided utility method to parse the result
+            final List<Uri> files = Utils.getSelectedFilesFromResult(result.getData());
+
+            // Do something with your list of files here
+            final StringBuilder sb = new StringBuilder();
+            for (final Uri uri : files) {
+                if (sb.length() > 0) {
+                    sb.append("\n");
+                }
+                sb.append(Utils.getFileForUri(uri));
             }
             binding.text.setText(sb.toString());
         }
