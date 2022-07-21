@@ -1,3 +1,4 @@
+Newer release notes can be found in [releases](https://github.com/TeamNewPipe/NoNonsense-FilePicker/releases).
 
 ## 4.2.1
 
