@@ -9,12 +9,6 @@ This does not impact the library's utility for non-SD-card locations, nor does i
 # NoNonsense-FilePicker
 
 <p>
-<a href="https://flattr.com/submit/auto?user_id=spacecowboy&url=https%3A%2F%2Fgithub.com%2Fspacecowboy%2FNoNonsense-FilePicker" target="_blank"><img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0"></a>
-<a href='https://dependencyci.com/github/spacecowboy/NoNonsense-FilePicker'><img src='https://dependencyci.com/github/spacecowboy/NoNonsense-FilePicker/badge' alt='Dependency Status'/></a>
-<a href='https://bintray.com/spacecowboy/maven/com.nononsenseapps%3Afilepicker/_latestVersion'><img src='https://api.bintray.com/packages/spacecowboy/maven/com.nononsenseapps%3Afilepicker/images/download.svg'></a>
-</p>
-
-<p>
 <img src="https://github.com/spacecowboy/NoNonsense-FilePicker/blob/master/screenshots/Nexus6-picker-dark.png?raw=true"
 width="25%"/>
 
@@ -66,11 +60,11 @@ Just add the dependency to your *build.gradle*:
 
 ```groovy
 repositories {
-    jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
-    compile 'com.nononsenseapps:filepicker:4.1.0'
+    implementation 'com.github.TeamNewPipe:NoNonsense-FilePicker:x.y.z'
 }
 ```
 
@@ -93,7 +87,7 @@ entry to your manifest to use the included FilePickerFragment:
 
 ```xml
     <provider
-        android:name="android.support.v4.content.FileProvider"
+        android:name="androidx.core.content.FileProvider"
         android:authorities="${applicationId}.provider"
         android:exported="false"
         android:grantUriPermissions="true">
@@ -150,6 +144,16 @@ you like..
         <item name="colorAccent">@color/accent</item>
     </style>
 ```
+### Registering the activity result
+
+You must register an ActivityResult to be launched.
+Replace the generic name with a name appropriate to your usage.
+
+```java
+ActivityResultLauncher<Intent> genericLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                this::genericFunctionResult);
+```
 
 ### Starting the picker in your app
 
@@ -170,18 +174,19 @@ you like..
     // internal memory.
     i.putExtra(FilePickerActivity.EXTRA_START_PATH, Environment.getExternalStorageDirectory().getPath());
 
-    startActivityForResult(i, FILE_CODE);
+    genericNameLauncher.launch(i);
 ```
 
 ### Handling the result
 
-You can use the included utility method to parse the activity result:
+You can use the included utility method to parse the activity result.
+Replace the generic name with a name appropriate to your usage.
 
 ```java
-protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-    if (requestCode == FILE_CODE && resultCode == Activity.RESULT_OK) {
+private void genericFunctionResult(final ActivityResult result) {
+    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
         // Use the provided utility method to parse the result
-        List<Uri> files = Utils.getSelectedFilesFromResult(intent);
+        List<Uri> files = Utils.getSelectedFilesFromResult(result.getData());
         for (Uri uri: files) {
             File file = Utils.getFileForUri(uri);
             // Do something with the result...
